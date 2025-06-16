@@ -8,15 +8,16 @@ def limpiar_pantalla():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 estilo_menu = Style.BRIGHT + Fore.GREEN
+estilo_menu_bg = Style.BRIGHT + Fore.GREEN + Back.YELLOW
 estilo_input = Style.BRIGHT + Fore.BLUE
 estilo_alerta = Style.BRIGHT + Fore.RED
 estilo_informe = Style.BRIGHT + Fore.YELLOW
 
 def mostrar_menu():
     print("\n")
-    print(estilo_menu + "**************************************")
-    print(estilo_menu + "Sistema de Gestión Básica De Productos")
-    print(estilo_menu + "**************************************\n")
+    print(estilo_menu_bg + "**************************************")
+    print(estilo_menu_bg + "Sistema de Gestión Básica De Productos")
+    print(estilo_menu_bg + "**************************************\n")
     print(
         estilo_menu +
         "1. Agregar producto\n"

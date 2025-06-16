@@ -1,9 +1,7 @@
 import modulo_funciones.funciones as func
-from colorama import init, Fore, Back, Style
 
 # Programa principal
 def main():
-    init(autoreset=True)
     productos = []
 
     while True:
@@ -39,7 +37,7 @@ def main():
             productos = func.eliminar_producto(productos)
         elif opcion == 5:
             func.limpiar_pantalla()
-            print(func.estilo_informe + "Gracias por usar el sistema.")
+            print(func.estilo_menu_bg + "Gracias por usar el sistema.")
             break
 
 if __name__ == "__main__":
