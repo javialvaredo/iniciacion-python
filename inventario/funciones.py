@@ -1,17 +1,21 @@
 import os
 import datetime
 from colorama import init, Fore, Back, Style
+import base_datos as bd
 
-init(autoreset=True) # reinicio a valroes por defecto despues de cada impresion
-
-def limpiar_pantalla():
-    os.system('cls' if os.name == 'nt' else 'clear')
 
 estilo_menu = Style.BRIGHT + Fore.GREEN
 estilo_menu_bg = Style.BRIGHT + Fore.GREEN + Back.YELLOW
 estilo_input = Style.BRIGHT + Fore.BLUE
 estilo_alerta = Style.BRIGHT + Fore.RED
 estilo_informe = Style.BRIGHT + Fore.YELLOW
+
+
+init(autoreset=True) # reinicio a valroes por defecto despues de cada impresion
+
+def limpiar_pantalla():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 
 def mostrar_menu():
     print("\n")
@@ -30,48 +34,57 @@ def mostrar_menu():
 def esperar():
     input(Fore.YELLOW + "Presione Enter para continuar.")
 
-def es_entero(valor):
-    return valor.isdigit() #devuelve True si el valor es digito entero
 
-
-def agregar_producto(productos):
+def agregar_producto(database):
     try:
         nombre = input(estilo_input + "Ingrese nombre de producto: ").capitalize().strip()
+        descripcion = input(estilo_input + "Ingrese la descripción: ").capitalize().strip()
+        cantidad_input = input(estilo_input + "Ingrese cantidad: ").strip()
+        precio_input = float(input(estilo_input + "Ingrese el precio: ").strip())
         categoria = input(estilo_input + "Ingrese categoría: ").capitalize().strip()
-        precio_input = input(estilo_input + "Ingrese el precio (sin centavos): ").strip()
-        fecha_y_hora_compra = datetime.datetime.now().strftime("%d-%m-%y %H:%M")
 
+        # Validaciones
         if not nombre or not categoria:
             raise ValueError("No se permiten valores vacíos.")
 
-        if not es_entero(precio_input):
-            raise ValueError("El precio debe ser un número entero.")
 
-        precio = int(precio_input)
-        productos.append([nombre, categoria, precio, fecha_y_hora_compra])
-        print(estilo_informe + "Producto agregado correctamente.")
+        cantidad = int(cantidad_input)
+        precio = float(precio_input)
+
+        # Insertar en base de datos usando función de bd
+        bd.insertar_producto(database, nombre, descripcion, cantidad, precio, categoria)
+        print(estilo_informe + "Producto agregado a la base de datos correctamente.")
 
     except ValueError as e:
         print(estilo_alerta + str(e))
-
     except Exception as e:
         print(estilo_alerta + f"Ocurrió un error inesperado: {e}")
-
     esperar()
-    return productos
 
 
-def mostrar_productos(productos):
+
+def mostrar_productos(database):
+    import os
+    print("Ruta absoluta a base de datos:", os.path.abspath(database))
+
     """
-    Función para mostrar productos recibe como parametro las lista de productos.
+    Solicita a base_datos los productos y los muestra por consola.
     """
-    if not productos:
-        print(estilo_alerta + "No hay productos registrados.")
-    else:
+    productos = bd.obtener_productos(database)
+
+    if productos:
         print("\nListado de productos:")
-        for producto in productos:
-            print(estilo_informe + f" Producto: {producto[0]}\n - categoria: {producto[1]}\n - Precio: ${producto[2]}\n - fecha y hora de compra: {producto[3]}\n")
+        for p in productos:
+            print(estilo_informe + f"ID: {p[0]} | Nombre: {p[1]} | Descripción: {p[2]} | Cantidad: {p[3]} | Precio: ${p[4]:.2f} | Categoría: {p[5]}")
+    else:
+        print(estilo_alerta + "No hay productos registrados en la base de datos.")
+
     esperar()
+
+
+
+    
+
 
 def buscar_producto(productos):
     """
