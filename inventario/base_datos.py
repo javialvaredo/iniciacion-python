@@ -1,7 +1,8 @@
 import sqlite3
 import os
-import main
 
+
+#------------ Crear base de dato y tabla si no existen --------------
 def crear_base_datos(database):
     """
     Crea una base de datos SQLite si no existe.
@@ -46,9 +47,10 @@ def crear_tabla_productos(database):
             conexion.close()
 
 
+# ------------Funciones CRUD en la base de datos ---------------
 def insertar_producto(database, nombre, descripcion, cantidad, precio, categoria):
     """
-    Inserta un producto en la tabla 'productos'.
+    Agrega un registro a la tabla 'productos'.
     """
     conexion = None
     try:
@@ -63,20 +65,18 @@ def insertar_producto(database, nombre, descripcion, cantidad, precio, categoria
             VALUES (?, ?, ?, ?, ?)
         """, (nombre, descripcion, cantidad, precio, categoria))
         conexion.commit()
-        print("Producto insertado correctamente.")
-
+      
     except sqlite3.Error as e:
         print(f"Error al insertar el producto: {e}")
     finally:
         if conexion:
-            conexion.close()
+            conexion.close() #Siempre cierra la conexion
 
 
 
 def obtener_productos(database):
     """
-    Recupera todos los productos de la base de datos.
-    Retorna una lista de tuplas.
+    Ejecuta la consulta en la base de datos.
     """
     conexion = None
     try:
@@ -96,8 +96,99 @@ def obtener_productos(database):
             conexion.close()
 
 
-   
+def buscar_producto_por_id(database, producto_id):
+    """
+    Busca un producto por su id en la base de datos.
+    """
+    conexion = None
+    try:
+        conexion = sqlite3.connect(database)
+        cursor = conexion.cursor()
+        cursor.execute("SELECT * FROM productos WHERE id = ?", (producto_id,))
+        resultado = cursor.fetchone()
+        return resultado  # tupla
+    except sqlite3.Error as e:
+        print(f"Error al buscar el producto por ID: {e}")
+        return None
+    finally:
+        if conexion:
+            conexion.close() 
+
+
+def actualizar_producto_por_id(database, producto_id, nombre, descripcion, cantidad, precio, categoria):
+    """
+    Actualiza un producto en la base de datos por su ID.
+    """
+    conexion = None
+    try:
+        conexion = sqlite3.connect(database)
+        cursor = conexion.cursor()
+
+        cursor.execute("""
+            UPDATE productos
+            SET nombre = ?, descripcion = ?, cantidad = ?, precio = ?, categoria = ?
+            WHERE id = ?
+        """, (nombre, descripcion, cantidad, precio, categoria, producto_id))
+
+        conexion.commit()
+
+        return cursor.rowcount > 0  # True si actualizó algo
+    except sqlite3.Error as e:
+        print(f"Error al actualizar el producto: {e}")
+        return False
+    finally:
+        if conexion:
+            conexion.close()
+
+
+def eliminar_producto_por_id(database, producto_id):
+    """
+    Elimina un producto por su ID.
+    Devuelve True si se eliminó, False si no se encontró.
+    """
+    conexion = None
+    try:
+        conexion = sqlite3.connect(database)
+        cursor = conexion.cursor()
+
+        # Verificamos que exista
+        cursor.execute("SELECT * FROM productos WHERE id = ?", (producto_id,))
+        producto = cursor.fetchone()
+        if not producto:
+            return False  # No existe
+
+        cursor.execute("DELETE FROM productos WHERE id = ?", (producto_id,))
+        conexion.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Error al eliminar el producto por ID: {e}")
+        return False
+    finally:
+        if conexion:
+            conexion.close()
+
+
+import sqlite3
+
+def obtener_productos_con_stock_bajo(database, limite):
+    """
+    Devuelve una lista de productos cuya cantidad es menor o igual al límite especificado.
+    """
+    conexion = None
+    try:
+        conexion = sqlite3.connect(database)
+        cursor = conexion.cursor()
+        cursor.execute("SELECT * FROM productos WHERE cantidad <= ?", (limite,))
+        productos = cursor.fetchall()
+        return productos
+    except sqlite3.Error as e:
+        print(f"Error al obtener productos con stock bajo: {e}")
+        return []
+    finally:
+        if conexion:
+            conexion.close()
+
 
 if __name__ == '__main__':
-    pass
+    pass #Evita que se ejecute el codigo automaticamente al ser importado desde otro archivo
     

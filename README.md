@@ -1,86 +1,44 @@
-# Sistema de Gestión Básica de Productos
+# 📦 Sistema de Gestión Básica de Productos
 
-Este proyecto es una aplicación de consola escrita en Python que permite gestionar una lista de productos usando operaciones CRUD (Crear, Leer, Buscar y Eliminar). El programa principal interactúa con un módulo personalizado que contiene todas las funciones necesarias para el manejo de productos.
+Este proyecto es una aplicación de consola escrita en Python que permite gestionar un inventario de productos utilizando una base de datos SQLite. 
 
----
+Permite realizar operaciones como:
 
-## 📦 Características
-
-- **Agregar productos** con nombre, categoría, precio y fecha/hora de registro.
-- **Mostrar productos** en formato legible.
-- **Buscar productos** por nombre exacto.
-- **Eliminar productos** con confirmación.
-- **Interfaz interactiva** por consola con limpieza de pantalla y validaciones.
-
----
-
-## 🗂 Estructura del Proyecto
-
-```
-├── main.py                # Archivo principal del programa
-└── modulo_funciones/
-    └── funciones.py       # Módulo con funciones auxiliares
-```
+- Agregar productos
+- Mostrar productos registrados
+- Buscar por nombre o ID
+- Actualizar productos
+- Eliminar productos
+- Reporte de Stock
 
 ---
 
-## 📋 Formato de los productos
+## 📁 Estructura del Proyecto
 
-Cada producto se guarda como una lista con los siguientes elementos:
+inventario/
+│
+├── data/
+│ └── inventario.db # Base de datos SQLite (se crea si no existe)
+│
+├── base_datos.py # Funciones de acceso a la base de datos
+├── funciones.py # Lógica del menú e interacción con el usuario
+├── main.py # Programa principal
+└── README.md # Este archivo
 
-```python
-[nombre, categoría, precio (int), fecha_y_hora_compra (str)]
-```
+Este proyecto usa colorama para colorear el texto en consola.
 
-## ✅ Validaciones
+La base de datos se crea automáticamente en la carpeta data/ si no existe.
 
-- El precio debe ser un número entero.
-- No se permiten campos vacíos para nombre o categoría.
-- Al eliminar un producto, se solicita confirmación previa.
-- Los productos se distinguen por nombre exacto (sensible a mayúsculas/minúsculas iniciales).
+Requisitos
+Python 3.7 o superior
+SQLite3 (incluido con Python)
+Módulo colorama (instalable vía pip)
 
----
+📂 Notas Técnicas
+La ruta a la base de datos es dinámica: se construye usando os.path.abspath(__file__) para asegurar compatibilidad al ejecutar desde cualquier carpeta.
 
-## 🚀 Cómo ejecutar el programa
+El archivo main.py se encarga de iniciar el programa y pasar la ruta de la base de datos como parámetro.
 
-1. Asegúrate de tener **Python 3** instalado.
-2. Descarga o clona este repositorio.
-3. Abre una terminal en la carpeta del proyecto.
-4. Ejecuta el archivo principal:
+El módulo funciones.py gestiona el input del usuario y llama a funciones de base_datos.py, que se encarga de las operaciones reales en SQLite.
 
-```bash
-python main.py
-```
-
----
-
-## 🧪 Ejemplo de uso
-
-```
-**************************************
-Sistema de Gestión Básica De Productos
-**************************************
-
-1. Agregar producto
-2. Mostrar productos
-3. Buscar producto
-4. Eliminar producto
-5. Salir
-Seleccione una opción: 1
-Ingrese nombre de producto: Café
-Ingrese categoría: Bebidas
-Ingrese el precio (sin centavos): 1500
-Producto agregado correctamente.
-```
-
----
-
-## 👨‍💻 Autor
-
-Javier Alvaredo  
-Argentina 🇦🇷  
-Proyecto educativo de Python para prácticas de CRUD.
-
----
-
-¡Gracias por probar este sistema de gestión de productos!
+Desarrollado por Javier Alvaredo.
