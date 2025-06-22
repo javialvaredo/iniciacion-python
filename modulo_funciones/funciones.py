@@ -33,33 +33,33 @@ def esperar():
 def es_entero(valor):
     return valor.isdigit() #devuelve True si el valor es digito entero
 
+
 def agregar_producto(productos):
-    """
-    Función para agregar productos. recibe comp parametro la lista de productos y devuelve la lista actualizada.
-    """
-    
-    nombre = input(estilo_input + "Ingrese nombre de producto: ").capitalize().strip()
-    categoria = input(estilo_input + "Ingrese categoría: ").capitalize().strip()
-    precio_input = input(estilo_input + "Ingrese el precio (sin centavos): ").strip()
-    fecha_y_hora_compra = datetime.datetime.now().strftime("%d-%m-%y %H:%M")
+    try:
+        nombre = input(estilo_input + "Ingrese nombre de producto: ").capitalize().strip()
+        categoria = input(estilo_input + "Ingrese categoría: ").capitalize().strip()
+        precio_input = input(estilo_input + "Ingrese el precio (sin centavos): ").strip()
+        fecha_y_hora_compra = datetime.datetime.now().strftime("%d-%m-%y %H:%M")
 
+        if not nombre or not categoria:
+            raise ValueError("No se permiten valores vacíos.")
 
-    if not nombre or not categoria:
-        print(estilo_alerta + "No se permiten valores vacíos.")
-        esperar()
-        return productos 
+        if not es_entero(precio_input):
+            raise ValueError("El precio debe ser un número entero.")
 
-    if not es_entero(precio_input):
-        print(estilo_alerta + "El precio debe ser un número.")
-        esperar()
-        return productos
-        
+        precio = int(precio_input)
+        productos.append([nombre, categoria, precio, fecha_y_hora_compra])
+        print(estilo_informe + "Producto agregado correctamente.")
 
-    precio = int(precio_input)
-    productos.append([nombre, categoria, precio, fecha_y_hora_compra])
-    print(estilo_informe + "Producto agregado correctamente.")
+    except ValueError as e:
+        print(estilo_alerta + str(e))
+
+    except Exception as e:
+        print(estilo_alerta + f"Ocurrió un error inesperado: {e}")
+
     esperar()
     return productos
+
 
 def mostrar_productos(productos):
     """
@@ -87,23 +87,26 @@ def buscar_producto(productos):
     return resultados
 
 def eliminar_producto(productos):
-    """
-    Función para eliminar un producto.
-    Recibe como parametro la lista de pdoructos y devuelve la lista actualizada.
-    """
-    producto_eliminar = input(estilo_input + "Ingrese el nombre del producto a eliminar: ").capitalize()
-    for i in range(len(productos)):
-        if producto_eliminar == productos[i][0]:
-            print(estilo_informe + f"Se va a eliminar: {productos[i][0]} - {productos[i][1]} - ${productos[i][2]}")
-            confirmacion = input("¿Está seguro que desea eliminar este producto? (S/N): ").strip().lower()
-            if confirmacion == 's':
-                productos.pop(i)
-                print(Fore.BLUE + "Producto eliminado." )
-            else:
-                print(Fore.BLUE + "Eliminación cancelada.")
-            esperar()
-            return productos 
-    
-    print(estilo_alerta + "Producto no figura ingresado en la lista.")
+    try:
+        producto_eliminar = input(estilo_input + "Ingrese el nombre del producto a eliminar: ").capitalize()
+        for i, producto in enumerate(productos):
+            if producto_eliminar == producto[0]:
+                print(estilo_informe + f"Se va a eliminar: {producto[0]} - {producto[1]} - ${producto[2]}")
+                confirmacion = input("¿Está seguro que desea eliminar este producto? (S/N): ").strip().lower()
+                if confirmacion == 's':
+                    productos.pop(i)
+                    print(Fore.BLUE + "Producto eliminado.")
+                else:
+                    print(Fore.BLUE + "Eliminación cancelada.")
+                break
+        else:
+            raise ValueError("Producto no figura ingresado en la lista.")
+
+    except ValueError as e:
+        print(estilo_alerta + str(e))
+
+    except Exception as e:
+        print(estilo_alerta + f"Ocurrió un error inesperado: {e}")
+
     esperar()
     return productos
