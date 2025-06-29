@@ -2,4 +2,3 @@ venv/
 # Ignorar archivos compilados de Python
 __pycache__/
 *.py[cod]
-funciones copy.py

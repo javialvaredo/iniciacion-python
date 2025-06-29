@@ -1,9 +1,9 @@
 import os
-import datetime
 from colorama import init, Fore, Back, Style
 import base_datos as bd
 
 
+# Estilos de salida de consola con colorama
 estilo_menu = Style.BRIGHT + Fore.GREEN
 estilo_menu_bg = Style.BRIGHT + Fore.GREEN + Back.YELLOW
 estilo_input = Style.BRIGHT + Fore.BLUE
@@ -73,7 +73,10 @@ def mostrar_productos(database):
     if productos:
         print("\nListado de productos:")
         for p in productos:
-            print(estilo_informe + f"ID: {p[0]} | Nombre: {p[1]} | Descripción: {p[2]} | Cantidad: {p[3]} | Precio: ${p[4]:.2f} | Categoría: {p[5]}")
+            print(estilo_informe +
+                  f"ID: {p[0]} | Nombre: {p[1]} | Descripción: {p[2]} | "
+                  f"Cantidad: {p[3]} | Precio: ${p[4]:.2f} | Categoría: {p[5]}"
+                  f"Creado: {p[6]} | Modificado: {p[7]}")
     else:
         print(estilo_alerta + "No hay productos registrados en la base de datos.")
 
@@ -91,7 +94,10 @@ def buscar_producto(database):
 
         if resultado:
             print(estilo_informe + f"\nProducto encontrado:")
-            print(estilo_informe + f"ID: {resultado[0]} | Nombre: {resultado[1]} | Descripción: {resultado[2]} | Cantidad: {resultado[3]} | Precio: ${resultado[4]:.2f} | Categoría: {resultado[5]}")
+            print(estilo_informe +
+                  f"ID: {resultado[0]} | Nombre: {resultado[1]} | Descripción: {resultado[2]} | "
+                  f"Cantidad: {resultado[3]} | Precio: ${resultado[4]:.2f} | Categoría: {resultado[5]}"
+                  f"Creado: {resultado[6]} | Modificado: {resultado[7]}")
         else:
             print(estilo_alerta + "No se encontró ningún producto con ese ID.")
 
@@ -117,7 +123,10 @@ def actualizar_producto(database):
             return
 
         print(estilo_informe + f"\nProducto actual:")
-        print(estilo_informe + f"ID: {producto[0]} | Nombre: {producto[1]} | Descripción: {producto[2]} | Cantidad: {producto[3]} | Precio: ${producto[4]} | Categoría: {producto[5]}")
+        print(estilo_informe +
+              f"ID: {producto[0]} | Nombre: {producto[1]} | Descripción: {producto[2]} | "
+              f"Cantidad: {producto[3]} | Precio: ${producto[4]} | Categoría: {producto[5]}"
+              f"Creado: {producto[6]} | Modificado: {producto[7]}")
 
         print(Fore.CYAN + "\nIngrese los nuevos valores o vacío para mantener el actual):")
 
@@ -160,7 +169,10 @@ def eliminar_producto(database):
             return
 
         print(estilo_informe + f"\nProducto a eliminar:")
-        print(estilo_informe + f"ID: {producto[0]} | Nombre: {producto[1]} | Cantidad: {producto[3]} | Precio: ${producto[4]:.2f}")
+        print(estilo_informe +
+              f"ID: {producto[0]} | Nombre: {producto[1]} | Cantidad: {producto[3]} | "
+              f"Precio: ${producto[4]:.2f} | Categoría: {producto[5]} | "
+              f"Creado: {producto[6]} | Modificado: {producto[7]}")
 
         confirmar = input(Fore.CYAN + "¿Está seguro que desea eliminar este producto? (s/n): ").lower()
         if confirmar == 's':
@@ -193,7 +205,9 @@ def reporte_stock(database):
         else:
             print(estilo_informe + f"\nProductos con stock ≤ {limite}:\n")
             for p in productos:
-                print(estilo_informe + f"ID: {p[0]} | Nombre: {p[1]} | Cantidad: {p[3]} | Precio: ${p[4]:.2f} | Categoría: {p[5]}")
+                print(estilo_informe +
+                      f"ID: {p[0]} | Nombre: {p[1]} | Cantidad: {p[3]} | Precio: ${p[4]:.2f} | "
+                      f"Categoría: {p[5]} | Creado: {p[6]} | Modificado: {p[7]}")
 
     except ValueError as e:
         print(estilo_alerta + str(e))

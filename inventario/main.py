@@ -1,5 +1,6 @@
 import os
 import funciones as func
+import base_datos as bd
 
 
 def main(database):
@@ -34,8 +35,12 @@ def main(database):
             break
 
 if __name__ == "__main__":
-    carpeta_base = os.path.dirname(os.path.abspath(__file__)) #usar rutas absolutas dinamicas par ekecutar de cualuier carpeta
+    carpeta_base = os.path.dirname(os.path.abspath(__file__)) 
     database = os.path.join(carpeta_base, "data", "inventario.db")
-    main(database) # enviamos la base de datos como parametro
+    # Crear base y tabla antes de arrancar la app
+    bd.crear_base_datos(database)
+    bd.crear_tabla_productos(database)
+
+    main(database)
     
 

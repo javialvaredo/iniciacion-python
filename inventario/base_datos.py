@@ -33,7 +33,9 @@ def crear_tabla_productos(database):
                 descripcion TEXT,
                 cantidad INTEGER NOT NULL,
                 precio REAL NOT NULL,
-                categoria TEXT
+                categoria TEXT,
+                creado_en TEXT DEFAULT (datetime('now')),
+                actualizado_en TEXT       
             )
         """)
         conexion.commit()
@@ -61,9 +63,9 @@ def insertar_producto(database, nombre, descripcion, cantidad, precio, categoria
         conexion = sqlite3.connect(database)
         cursor = conexion.cursor()
         cursor.execute("""
-            INSERT INTO productos (nombre, descripcion, cantidad, precio, categoria)
-            VALUES (?, ?, ?, ?, ?)
-        """, (nombre, descripcion, cantidad, precio, categoria))
+            INSERT INTO productos (nombre, descripcion, cantidad, precio, categoria, actualizado_en)
+            VALUES (?, ?, ?, ?, ?, datetime('now'))
+        """, (nombre, descripcion, cantidad, precio, categoria)) # "?" evita vulnerabilidades como las inyecciones SQL.
         conexion.commit()
       
     except sqlite3.Error as e:
@@ -126,7 +128,7 @@ def actualizar_producto_por_id(database, producto_id, nombre, descripcion, canti
 
         cursor.execute("""
             UPDATE productos
-            SET nombre = ?, descripcion = ?, cantidad = ?, precio = ?, categoria = ?
+            SET nombre = ?, descripcion = ?, cantidad = ?, precio = ?, categoria = ?, actualizado_en = datetime('now')
             WHERE id = ?
         """, (nombre, descripcion, cantidad, precio, categoria, producto_id))
 
