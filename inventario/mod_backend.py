@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import sys
 
 
 #------------ Crear base de dato y tabla si no existen --------------
@@ -27,21 +28,25 @@ def crear_tabla_productos(database):
         conexion = sqlite3.connect(database)
         cursor = conexion.cursor()
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS productos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nombre TEXT NOT NULL,
-                descripcion TEXT,
-                cantidad INTEGER NOT NULL,
-                precio REAL NOT NULL,
-                categoria TEXT,
-                actualizado_en TEXT DEFAULT (datetime('now'))
-            )
+           CREATE TABLE IF NOT EXISTS productos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL CHECK(nombre <> ''),
+            descripcion TEXT,
+            cantidad INTEGER NOT NULL CHECK(cantidad >= 0),
+            precio REAL NOT NULL CHECK(precio >= 0),
+            categoria TEXT,
+            actualizado_en TEXT DEFAULT (datetime('now'))
+            );
         """)
         conexion.commit()
         print("Tabla 'productos' creada exitosamente.")
 
     except sqlite3.Error as e:
         print(f"Error al crear la tabla: {e}")
+    except sqlite3.DatabaseError:
+        print(f"Error de base de datos, revisar la integridad del archivo {database}")
+        sys.exit()
+
 
     finally:
         if conexion:
@@ -67,8 +72,15 @@ def insertar_producto(database, nombre, descripcion, cantidad, precio, categoria
         """, (nombre, descripcion, cantidad, precio, categoria)) # "?" para poner evita vulnerabilidades como las inyecciones SQL. datetime('now') es una funcion de sqlite que devuelfe fecha y hora 
         conexion.commit()
       
+    except sqlite3.IntegrityError:
+        print("Error: los datos no cumplen las restricciones de la base de datos.")
+    
+    except sqlite3.DatabaseError:
+        print(f"Error de base de datos, revisar la integridad del archivo {database}")
+        sys.exit()
     except sqlite3.Error as e:
         print(f"Error al insertar el producto: {e}")
+    
     finally:
         if conexion:
             conexion.close() #Siempre cierra la conexion
@@ -87,6 +99,10 @@ def obtener_productos(database):
         cursor.execute("SELECT * FROM productos")
         productos = cursor.fetchall()
         return productos
+
+    except sqlite3.DatabaseError:
+        print(f"Error de base de datos, revisar la integridad del archivo {database}")
+        sys.exit()
 
     except sqlite3.Error as e:
         print(f"Error al acceder a la base de datos: {e}")
@@ -108,9 +124,13 @@ def buscar_producto_por_id(database, producto_id):
         cursor.execute("SELECT * FROM productos WHERE id = ?", (producto_id,))
         resultado = cursor.fetchone()
         return resultado  # tupla
-    except sqlite3.Error as e:
-        print(f"Error al buscar el producto por ID: {e}")
+    except sqlite3.IntegrityError:
+        print("Error: los datos no cumplen las restricciones de la base de datos.")
         return None
+    except sqlite3.DatabaseError:
+        print(f"Error de base de datos, revisar la integridad del archivo {database}")
+        sys.exit()
+
     finally:
         if conexion:
             conexion.close() 
@@ -134,6 +154,10 @@ def actualizar_producto_por_id(database, producto_id, nombre, descripcion, canti
         conexion.commit()
 
         return cursor.rowcount > 0  # True si actualizó algo
+    except sqlite3.DatabaseError:
+        print(f"Error de base de datos, revisar la integridad del archivo {database}")
+        sys.exit()
+
     except sqlite3.Error as e:
         print(f"Error al actualizar el producto: {e}")
         return False
@@ -161,6 +185,10 @@ def eliminar_producto_por_id(database, producto_id):
         cursor.execute("DELETE FROM productos WHERE id = ?", (producto_id,))
         conexion.commit()
         return True
+    except sqlite3.DatabaseError:
+        print(f"Error de base de datos, revisar la integridad del archivo {database}")
+        sys.exit()
+
     except sqlite3.Error as e:
         print(f"Error al eliminar el producto por ID: {e}")
         return False
@@ -168,8 +196,6 @@ def eliminar_producto_por_id(database, producto_id):
         if conexion:
             conexion.close()
 
-
-import sqlite3
 
 def obtener_productos_con_stock_bajo(database, limite):
     """
@@ -182,6 +208,10 @@ def obtener_productos_con_stock_bajo(database, limite):
         cursor.execute("SELECT * FROM productos WHERE cantidad <= ?", (limite,))
         productos = cursor.fetchall()
         return productos
+    except sqlite3.DatabaseError:
+        print(f"Error de base de datos, revisar la integridad del archivo {database}")
+        sys.exit()
+
     except sqlite3.Error as e:
         print(f"Error al obtener productos con stock bajo: {e}")
         return []
