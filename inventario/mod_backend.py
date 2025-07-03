@@ -191,7 +191,7 @@ def obtener_productos_con_stock_bajo(database, limite):
 
 
 def main():
-    print("Este script se está ejecutando directamente.")
+    print("main de mod_backend se ejecuta desde el main.py")
 if __name__ == '__main__':
     main()
     

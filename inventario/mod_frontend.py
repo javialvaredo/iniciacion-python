@@ -10,8 +10,6 @@ def pausa():
                "Presione una tecla para continuar..."')
     return None 
 
-    #input("Presione Enter para continuar.")
-
 
 def mostrar_menu():
     print("\n")
@@ -28,9 +26,19 @@ def mostrar_menu():
         "7. Salir" 
     )
 
+def imprimir_procuctos(resultado): 
+    """
+    Funcion generica para reutilizar codigo
+    """
+    print(f"ID: {resultado[0]:<3} | Nombre: {resultado[1]:<15} | Descripción: {resultado[2]:20} | "
+                  f"Cantidad: {resultado[3]:<8} | Precio: ${resultado[4]:<8.2f} | Categoría: {resultado[5]:<10} | "
+                  f"Modificado: {resultado[6]:<19}")
 
 
-def agregar_producto(database): # ingreso de datos mediante la consola
+def agregar_producto(database):
+    """
+      ingreso de datos mediante la consola
+    """
     try:
         nombre = input("Ingrese nombre de producto: ").capitalize().strip()
         descripcion = input("Ingrese la descripción: ").capitalize().strip()
@@ -66,9 +74,7 @@ def mostrar_productos(database):
     if productos:
         print("\nListado de productos:")
         for p in productos:
-            print(f"ID: {p[0]:<3} | Nombre: {p[1]:<15} | Descripción: {p[2]:<20} | "
-                  f"Cantidad: {p[3]:<8} | Precio: ${p[4]:<8.2f} | Categoría: {p[5]:<10} | "
-                  f"Modificado: {p[6]:<19}")
+            imprimir_procuctos(p)
     else:
         print("No hay productos registrados en la base de datos.")
 
@@ -86,9 +92,7 @@ def buscar_producto(database):
 
         if resultado:
             print(f"\nProducto encontrado:")
-            print(f"ID: {resultado[0]:<3} | Nombre: {resultado[1]:<15} | Descripción: {resultado[2]:20} | "
-                  f"Cantidad: {resultado[3]:<8} | Precio: ${resultado[4]:<8.2f} | Categoría: {resultado[5]:<10} | "
-                  f"Modificado: {resultado[6]:<19}")
+            imprimir_procuctos(resultado)
         else:
             print("No se encontró ningún producto con ese ID.")
 
@@ -101,6 +105,9 @@ def buscar_producto(database):
 
 
 def actualizar_producto(database):
+    """
+    actualiza un producto, si dejamos vacio el campo "or" mantiene el valor anterior 
+    """
     try:
         producto_id_input = input("Ingrese el ID del producto a actualizar: ").strip()
         if not producto_id_input.isdigit():
@@ -114,10 +121,9 @@ def actualizar_producto(database):
             return
 
         print(f"\nProducto actual:")
-        print(f"ID: {producto[0]:<3} | Nombre: {producto[1]:<15} | Descripción: {producto[2]:<20} | "
-              f"Cantidad: {producto[3]:<8} | Precio: ${producto[4]:<8.2f} | Categoría: {producto[5]:<10} | "
-              f"Modificado: {producto[6]:<19}")
 
+        imprimir_procuctos(producto)
+    
         print("\nIngrese los nuevos valores o vacío para mantener el actual):")
 
         nombre = input(f"Nuevo nombre [{producto[1]}]: ").strip().capitalize() or producto[1] # si dejamos vacio el campo "or" mantiene el valor anterior
@@ -144,6 +150,9 @@ def actualizar_producto(database):
 
 
 def eliminar_producto(database):
+    """
+    borra un registro de la base de datos
+    """
     try:
         id_input = input("Ingrese el ID del producto a eliminar: ").strip()
         if not id_input.isdigit():
@@ -159,9 +168,7 @@ def eliminar_producto(database):
             return
 
         print(f"\nProducto a eliminar:")
-        print(f"ID: {producto[0]:<3} | Nombre: {producto[1]:<15} | Descripción: {producto[2]:<20} | "
-              f"Cantidad: {producto[3]:<8} | Precio: ${producto[4]:<8.2f} | Categoría: {producto[5]:<10} | "
-              f"Modificado: {producto[6]:<19}")
+        imprimir_procuctos(producto)
 
         confirmar = input("¿Está seguro que desea eliminar este producto? (s/n): ").lower()
         if confirmar == 's':
@@ -181,6 +188,9 @@ def eliminar_producto(database):
 
 
 def reporte_stock(database):
+    """
+    emite reportes de stock en base al limite ingresado
+    """
     try:
         limite_input = input("Ingrese el límite de stock (cantidad máxima): ").strip()
         if not limite_input.isdigit():
@@ -205,8 +215,8 @@ def reporte_stock(database):
     pausa()
 
 def main():
-    print("Este script se está ejecutando directamente.")
+    print("main de mod_frontend se ejecuta desde el main.py")
 
 if __name__ == '__main__':
-    main() 
+    main()
     
