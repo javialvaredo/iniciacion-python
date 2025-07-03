@@ -2,7 +2,6 @@ import os
 import mod_frontend as func
 import mod_backend as bd
 
-
 def main(database):
     while True:
         func.limpiar_pantalla()

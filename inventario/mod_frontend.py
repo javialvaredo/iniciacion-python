@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 import mod_backend as bd
 
 
@@ -30,9 +31,9 @@ def imprimir_procuctos(resultado):
     """
     Funcion generica para reutilizar codigo
     """
-    print(f"ID: {resultado[0]:<3} | Nombre: {resultado[1]:<15} | Descripción: {resultado[2]:20} | "
-                  f"Cantidad: {resultado[3]:<8} | Precio: ${resultado[4]:<8.2f} | Categoría: {resultado[5]:<10} | "
-                  f"Modificado: {resultado[6]:<19}")
+    print(f"ID: {resultado[0]:<2} | Nombre: {resultado[1]:<15} | Descripción: {resultado[2]:<17} | "
+                  f"Cantidad: {resultado[3]:<5} | Precio: $ {resultado[4]:<8.2f} | Categoría: {resultado[5]:<10} | "
+                  f"Modificado: {resultado[6]:<14}")
 
 
 def agregar_producto(database):
@@ -45,6 +46,7 @@ def agregar_producto(database):
         cantidad_input = input("Ingrese cantidad: ").strip()
         precio_input = float(input( "Ingrese el precio: ").strip())
         categoria = input("Ingrese categoría: ").capitalize().strip()
+        actualizado_en = datetime.now().strftime("%d-%m-%y %H:%M")
 
         # Validaciones
         if not nombre or not categoria:
@@ -54,7 +56,7 @@ def agregar_producto(database):
         precio = float(precio_input)
 
         # Insertar en base de datos usando función del modulo base_datos (bd)
-        bd.insertar_producto(database, nombre, descripcion, cantidad, precio, categoria)
+        bd.insertar_producto(database, nombre, descripcion, cantidad, precio, categoria, actualizado_en)
         print("Producto agregado correctamente.")
 
     except ValueError as e:
@@ -134,8 +136,9 @@ def actualizar_producto(database):
 
         cantidad = int(cantidad_input) if cantidad_input else producto[3]
         precio = float(precio_input) if precio_input else producto[4]
+        actualizado_en = datetime.now().strftime("%d-%m-%y %H:%M")
 
-        actualizado = bd.actualizar_producto_por_id(database, producto_id, nombre, descripcion, cantidad, precio, categoria)
+        actualizado = bd.actualizar_producto_por_id(database, producto_id, nombre, descripcion, cantidad, precio, categoria, actualizado_en)
 
         if actualizado:
             print("Producto actualizado correctamente.")
@@ -204,9 +207,7 @@ def reporte_stock(database):
         else:
             print(f"\nProductos con stock ≤ {limite}:\n")
             for p in productos:
-                print(f"ID: {p[0]:<3} | Nombre: {p[1]:<15} Descripción: {p[2]:<20} | "
-                      f"Cantidad: {p[3]:<8} | Precio: ${p[4]:<8.2f} | Categoría: {p[5]:<10} | "
-                      f"Modificado: {p[6]:<19}")
+                imprimir_procuctos(p)
 
     except ValueError as e:
         print(str(e))

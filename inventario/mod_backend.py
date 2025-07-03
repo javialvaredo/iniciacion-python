@@ -35,7 +35,7 @@ def crear_tabla_productos(database):
             cantidad INTEGER NOT NULL CHECK(cantidad >= 0),
             precio REAL NOT NULL CHECK(precio >= 0),
             categoria TEXT,
-            actualizado_en TEXT DEFAULT (datetime('now'))
+            actualizado_en TEXT
             );
         """)
         conexion.commit()
@@ -54,7 +54,7 @@ def crear_tabla_productos(database):
 
 
 # ------------Funciones CRUD en la base de datos ---------------
-def insertar_producto(database, nombre, descripcion, cantidad, precio, categoria):
+def insertar_producto(database, nombre, descripcion, cantidad, precio, categoria, actualizado_en):
     """
     Agrega un registro a la tabla 'productos'.
     """
@@ -68,8 +68,8 @@ def insertar_producto(database, nombre, descripcion, cantidad, precio, categoria
         cursor = conexion.cursor()
         cursor.execute("""
             INSERT INTO productos (nombre, descripcion, cantidad, precio, categoria, actualizado_en)
-            VALUES (?, ?, ?, ?, ?, datetime('now'))              
-        """, (nombre, descripcion, cantidad, precio, categoria)) # "?" para poner evita vulnerabilidades como las inyecciones SQL. datetime('now') es una funcion de sqlite que devuelfe fecha y hora 
+            VALUES (?, ?, ?, ?, ?,?)              
+        """, (nombre, descripcion, cantidad, precio, categoria, actualizado_en)) # "?" para poner evita vulnerabilidades como las inyecciones SQL. datetime('now') es una funcion de sqlite que devuelfe fecha y hora 
         conexion.commit()
       
     except sqlite3.IntegrityError:
@@ -136,7 +136,7 @@ def buscar_producto_por_id(database, producto_id):
             conexion.close() 
 
 
-def actualizar_producto_por_id(database, producto_id, nombre, descripcion, cantidad, precio, categoria):
+def actualizar_producto_por_id(database, producto_id, nombre, descripcion, cantidad, precio, categoria, actualizado_en):
     """
     Actualiza un producto en la base de datos por su ID.
     """
@@ -147,9 +147,9 @@ def actualizar_producto_por_id(database, producto_id, nombre, descripcion, canti
 
         cursor.execute("""
             UPDATE productos
-            SET nombre = ?, descripcion = ?, cantidad = ?, precio = ?, categoria = ?, actualizado_en = datetime('now')
+            SET nombre = ?, descripcion = ?, cantidad = ?, precio = ?, categoria = ?, actualizado_en = ?
             WHERE id = ?
-        """, (nombre, descripcion, cantidad, precio, categoria, producto_id))
+        """, (nombre, descripcion, cantidad, precio, categoria, actualizado_en, producto_id))
 
         conexion.commit()
 
