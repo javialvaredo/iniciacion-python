@@ -34,8 +34,7 @@ def crear_tabla_productos(database):
                 cantidad INTEGER NOT NULL,
                 precio REAL NOT NULL,
                 categoria TEXT,
-                creado_en TEXT DEFAULT (datetime('now')),
-                actualizado_en TEXT       
+                actualizado_en TEXT DEFAULT (datetime('now'))
             )
         """)
         conexion.commit()
@@ -64,8 +63,8 @@ def insertar_producto(database, nombre, descripcion, cantidad, precio, categoria
         cursor = conexion.cursor()
         cursor.execute("""
             INSERT INTO productos (nombre, descripcion, cantidad, precio, categoria, actualizado_en)
-            VALUES (?, ?, ?, ?, ?, datetime('now'))
-        """, (nombre, descripcion, cantidad, precio, categoria)) # "?" evita vulnerabilidades como las inyecciones SQL.
+            VALUES (?, ?, ?, ?, ?, datetime('now'))              
+        """, (nombre, descripcion, cantidad, precio, categoria)) # "?" para poner evita vulnerabilidades como las inyecciones SQL. datetime('now') es una funcion de sqlite que devuelfe fecha y hora 
         conexion.commit()
       
     except sqlite3.Error as e:
@@ -191,6 +190,8 @@ def obtener_productos_con_stock_bajo(database, limite):
             conexion.close()
 
 
+def main():
+    print("Este script se está ejecutando directamente.")
 if __name__ == '__main__':
-    pass #Evita que se ejecute el codigo automaticamente al ser importado desde otro archivo
+    main()
     

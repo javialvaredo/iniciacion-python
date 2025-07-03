@@ -1,6 +1,6 @@
 import os
-import funciones as func
-import base_datos as bd
+import mod_frontend as func
+import mod_backend as bd
 
 
 def main(database):
@@ -9,11 +9,11 @@ def main(database):
         func.mostrar_menu()
 
         try:
-            opcion = int(input(func.estilo_input + "Seleccione una opción: "))
+            opcion = int(input("Seleccione una opción: "))
             if opcion not in range(1, 8):
                 raise ValueError("Opción fuera de rango")
         except ValueError:
-            print(func.estilo_alerta + "Entrada inválida. Ingrese un número del 1 al 7.")
+            print("Entrada inválida. Ingrese un número del 1 al 7.")
             func.esperar()
             continue
 
@@ -31,16 +31,21 @@ def main(database):
             func.reporte_stock(database)
         elif opcion == 7:
             func.limpiar_pantalla()
-            print(func.estilo_menu_bg + "Gracias por usar el sistema.")
+            print("Gracias por usar el sistema.")
             break
 
-if __name__ == "__main__":
+def crear_base_datos():
     carpeta_base = os.path.dirname(os.path.abspath(__file__)) 
-    database = os.path.join(carpeta_base, "data", "inventario.db")
-    # Crear base y tabla antes de arrancar la app
+    database = os.path.join(carpeta_base, "data", "data.db")
+    # Crear base y tabla (si no existe) antes de iniciar la app
     bd.crear_base_datos(database)
     bd.crear_tabla_productos(database)
+    return database
 
+
+
+if __name__ == "__main__":
+    database = crear_base_datos()
     main(database)
     
 

@@ -18,7 +18,7 @@ Permite realizar operaciones como:
 inventario/
 │
 ├── data/
-│ └── inventario.db # Base de datos SQLite (se crea si no existe)
+│ └── data.db # Base de datos SQLite (se crea si no existe)
 │
 ├── base_datos.py # Funciones de acceso a la base de datos
 ├── funciones.py # Lógica del menú e interacción con el usuario
