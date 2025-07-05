@@ -23,7 +23,7 @@ def mostrar_menu():
         "3. Buscar producto por id\n"
         "4. Actualizar producto por id\n"
         "5. Eliminar producto por id\n"
-        "6. Reportes de Stock\n"
+        "6. Reportes de Stock mínimo\n"
         "7. Salir" 
     )
 
@@ -195,7 +195,7 @@ def reporte_stock(database):
     emite reportes de stock en base al limite ingresado
     """
     try:
-        limite_input = input("Ingrese el límite de stock (cantidad máxima): ").strip()
+        limite_input = input("Ingrese el límite de stock : ").strip()
         if not limite_input.isdigit():
             raise ValueError("El límite debe ser un número entero.")
 
